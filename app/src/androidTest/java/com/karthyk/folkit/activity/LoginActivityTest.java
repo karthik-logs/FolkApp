@@ -77,9 +77,17 @@ public class LoginActivityTest {
 
   @Test
   public void Should_Display_ProgressBar_On_SignIn_Pressed() {
+    onView(withId(R.id.edit_text_username)).perform(typeText(mStringToBeTyped),
+        closeSoftKeyboard());
     onView(withId(R.id.edit_text_password)).perform(typeText(mStringToBeTyped),
         closeSoftKeyboard());
     onView(withId(R.id.btn_sign_in)).perform(click());
     onView(withId(R.id.progressBar)).check(matches(isDisplayed()));
+  }
+
+  @Test
+  public void Should_Display_Sign_Up_Page_On_SignUp_Pressed() {
+    onView(withId(R.id.btn_sign_in)).perform(click());
+    onView(withId(R.id.edit_text_email)).check(matches(isDisplayed()));
   }
 }
