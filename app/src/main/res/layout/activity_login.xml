@@ -28,7 +28,7 @@
         android:background="#263139">
 
         <ToggleButton
-            android:id="@+id/btn_sign_up"
+            android:id="@+id/toggle_sign_up_sign_in"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"

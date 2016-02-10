@@ -4,6 +4,7 @@
              android:layout_height="match_parent">
 
     <LinearLayout
+        android:id="@+id/layout_sign_in"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="40dp"
@@ -15,7 +16,7 @@
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_margin="10dp"
-            android:background="#FFFF"
+            android:background="@drawable/edit_text_rounded_corners"
             android:hint="Username or Email Address"
             android:padding="10dp"/>
 
@@ -24,10 +25,10 @@
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_margin="10dp"
-            android:background="#FFFF"
+            android:background="@drawable/edit_text_rounded_corners"
             android:hint="Password"
-            android:padding="10dp"
-            android:password="true"/>
+            android:inputType="textPassword"
+            android:padding="10dp"/>
 
         <Button
             android:id="@+id/btn_sign_in"
