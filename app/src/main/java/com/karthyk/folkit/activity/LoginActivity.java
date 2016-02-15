@@ -48,17 +48,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     btnSignUp = (Button) findViewById(R.id.btn_sign_up);
     btnSignUp.setOnClickListener(this);
     etUsername = (EditText) findViewById(R.id.edit_text_username);
-    clearError(etUsername);
     etPassword = (EditText) findViewById(R.id.edit_text_password);
-    clearError(etPassword);
     etUsernameNew = (EditText) findViewById(R.id.edit_text_username_new);
-    clearError(etUsernameNew);
     etPasswordNew = (EditText) findViewById(R.id.edit_text_password_new);
-    clearError(etPasswordNew);
     etEmail = (EditText) findViewById(R.id.edit_text_email_new);
-    clearError(etEmail);
     etConfirmPassword = (EditText) findViewById(R.id.edit_text_confirm_password);
-    clearError(etConfirmPassword);
+    clearError(etUsername, etPassword, etUsernameNew, etPasswordNew, etEmail, etConfirmPassword);
     progressBar = (ProgressBar) findViewById(R.id.progressBar);
     progressBarNew = (ProgressBar) findViewById(R.id.progressBar_new);
   }
@@ -74,25 +69,28 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     errorIcon.setBounds(0, 0, errorIcon.getIntrinsicWidth(), errorIcon.getIntrinsicHeight());
     return errorIcon;
   }
+
   private void setErrorText(EditText editText, String errorMsg) {
 
     editText.setError(errorMsg, getErrorIcon());
   }
 
-  private void clearError(final EditText editText) {
-    editText.addTextChangedListener(new TextWatcher() {
-      @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+  private void clearError(EditText... params) {
+    for (final EditText editText : params) {
+      editText.addTextChangedListener(new TextWatcher() {
+        @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
-      }
+        }
 
-      @Override public void onTextChanged(CharSequence s, int start, int before, int count) {
-        editText.setError(null);
-      }
+        @Override public void onTextChanged(CharSequence s, int start, int before, int count) {
+          editText.setError(null);
+        }
 
-      @Override public void afterTextChanged(Editable s) {
+        @Override public void afterTextChanged(Editable s) {
 
-      }
-    });
+        }
+      });
+    }
   }
 
   @Override public void onClick(View v) {
@@ -170,7 +168,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
   }
 
   private void signUp() {
-    if(!TextUtils.equals(etPasswordNew.getText().toString(),
+    if (!TextUtils.equals(etPasswordNew.getText().toString(),
         etConfirmPassword.getText().toString())) {
       etConfirmPassword.setError(getString(R.string.error_password_mismatch), getErrorIcon());
       return;
