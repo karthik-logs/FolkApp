@@ -3,10 +3,15 @@ package com.karthyk.folkit.activity;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.test.suitebuilder.annotation.LargeTest;
+import android.view.View;
+import android.widget.EditText;
 
 import com.karthyk.folkit.R;
 
-import org.junit.Before;
+import org.hamcrest.Description;
+import org.hamcrest.Matcher;
+import org.hamcrest.TypeSafeMatcher;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -23,17 +28,11 @@ import static android.support.test.espresso.matcher.ViewMatchers.withText;
 @LargeTest
 public class LoginActivityTest {
 
-  public String mStringToBeTyped;
+  public final String mStringToBeTyped = "default";
 
+  @Rule
   public ActivityTestRule<LoginActivity> mActivityRule = new ActivityTestRule<>(
       LoginActivity.class);
-
-
-  @Before
-  public void initDefaultStrings() {
-    mStringToBeTyped = "default";
-  }
-
 
   @Test
   public void InputFields_Should_be_Visible_SignInLayout() {
@@ -66,13 +65,15 @@ public class LoginActivityTest {
   @Test
   public void Should_Display_Error_OnEmptyUsername_When_SignIn_Pressed_SignInLayout() {
     onView(withId(R.id.btn_sign_in)).perform(click());
-    onView(withText(R.string.error_empty_username)).check(matches(isDisplayed()));
+    onView(withId(R.id.edit_text_username)).check(matches(withHint(
+        mActivityRule.getActivity().getString(R.string.error_empty_username))));
   }
 
   @Test
   public void Should_Display_Error_OnEmptyPassword_When_SignIn_Pressed_SignInLayout() {
     onView(withId(R.id.btn_sign_in)).perform(click());
-    onView(withText(R.string.error_empty_username)).check(matches(isDisplayed()));
+    onView(withId(R.id.edit_text_password)).check(matches(withHint(
+        mActivityRule.getActivity().getString(R.string.error_empty_password))));
   }
 
   @Test
@@ -140,7 +141,6 @@ public class LoginActivityTest {
     onView(withId(R.id.edit_text_confirm_password)).check(matches(isDisplayed()));
     onView(withId(R.id.edit_text_confirm_password)).perform(typeText(mStringToBeTyped),
         closeSoftKeyboard());
-    onView(withId(R.id.edit_text_confirm_password)).check(matches(withText(mStringToBeTyped)));
   }
 
   @Test
@@ -154,21 +154,24 @@ public class LoginActivityTest {
   public void Should_Display_Error_OnEmptyUsername_When_SignUp_Pressed_SignUpLayout() {
     onView(withId(R.id.toggle_sign_up_sign_in)).perform(click());
     onView(withId(R.id.btn_sign_up)).perform(click());
-    onView(withText(R.string.error_empty_username)).check(matches(isDisplayed()));
+    onView(withId(R.id.edit_text_username_new)).check(matches(withHint(
+        mActivityRule.getActivity().getString(R.string.error_empty_username))));
   }
 
   @Test
   public void Should_Display_Error_OnEmptyEmail_When_SignUp_Pressed_SignUpLayout() {
     onView(withId(R.id.toggle_sign_up_sign_in)).perform(click());
     onView(withId(R.id.btn_sign_up)).perform(click());
-    onView(withText(R.string.error_empty_email)).check(matches(isDisplayed()));
+    onView(withId(R.id.edit_text_email_new)).check(matches(withHint(
+        mActivityRule.getActivity().getString(R.string.error_empty_email))));
   }
 
   @Test
   public void Should_Display_Error_OnEmptyPassword_When_SignUp_Pressed_SignUpLayout() {
     onView(withId(R.id.toggle_sign_up_sign_in)).perform(click());
     onView(withId(R.id.btn_sign_up)).perform(click());
-    onView(withText(R.string.error_empty_password)).check(matches(isDisplayed()));
+    onView(withId(R.id.edit_text_password_new)).check(matches(withHint(
+        mActivityRule.getActivity().getString(R.string.error_empty_password))));
   }
 
   @Test
@@ -177,7 +180,8 @@ public class LoginActivityTest {
     onView(withId(R.id.btn_sign_up)).perform(click());
     onView(withId(R.id.edit_text_password_new)).perform(typeText(mStringToBeTyped),
         closeSoftKeyboard());
-    onView(withText(R.string.error_password_mismatch)).check(matches(isDisplayed()));
+    onView(withId(R.id.edit_text_confirm_password)).check(matches(withHint(
+        mActivityRule.getActivity().getString(R.string.error_password_mismatch))));
   }
 
   @Test
@@ -185,9 +189,33 @@ public class LoginActivityTest {
     onView(withId(R.id.toggle_sign_up_sign_in)).perform(click());
     onView(withId(R.id.edit_text_username_new)).perform(typeText(mStringToBeTyped),
         closeSoftKeyboard());
-    onView(withId(R.id.edit_text_password)).perform(typeText(mStringToBeTyped),
+    onView(withId(R.id.edit_text_password_new)).perform(typeText(mStringToBeTyped),
         closeSoftKeyboard());
-    onView(withId(R.id.btn_sign_in)).perform(click());
-    onView(withId(R.id.progressBar)).check(matches(isDisplayed()));
+    onView(withId(R.id.edit_text_email_new)).perform(typeText(mStringToBeTyped),
+        closeSoftKeyboard());
+    onView(withId(R.id.edit_text_confirm_password)).perform(typeText(mStringToBeTyped),
+        closeSoftKeyboard());
+    onView(withId(R.id.btn_sign_up)).perform(click());
+    onView(withId(R.id.progressBar_new)).check(matches(isDisplayed()));
+  }
+
+  public static Matcher<View> withHint(final String expectedHint) {
+    return new TypeSafeMatcher<View>() {
+
+      @Override
+      public boolean matchesSafely(View view) {
+        if (!(view instanceof EditText)) {
+          return false;
+        }
+
+        String errorMsg = ((EditText) view).getError().toString();
+
+        return expectedHint.equals(errorMsg);
+      }
+
+      @Override
+      public void describeTo(Description description) {
+      }
+    };
   }
 }

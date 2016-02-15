@@ -6,13 +6,14 @@
     android:layout_height="match_parent"
     android:background="#455865"
     android:orientation="vertical"
-    android:weightSum="4"
+    android:weightSum="6"
     tools:context=".activity.LoginActivity">
 
     <ViewSwitcher
+        android:id="@+id/view_switcher"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="3">
+        android:layout_weight="5">
 
         <include layout="@layout/layout_sign_in">
         </include>
