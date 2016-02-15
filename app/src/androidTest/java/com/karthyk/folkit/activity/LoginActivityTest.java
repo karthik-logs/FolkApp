@@ -141,6 +141,7 @@ public class LoginActivityTest {
     onView(withId(R.id.edit_text_confirm_password)).check(matches(isDisplayed()));
     onView(withId(R.id.edit_text_confirm_password)).perform(typeText(mStringToBeTyped),
         closeSoftKeyboard());
+    onView(withId(R.id.edit_text_confirm_password)).check(matches(withText(mStringToBeTyped)));
   }
 
   @Test
