@@ -11,24 +11,56 @@
         android:gravity="center"
         android:orientation="vertical">
 
-        <EditText
-            android:id="@+id/edit_text_username_new"
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:layout_margin="10dp"
-            android:background="@drawable/edit_text_rounded_corners"
-            android:hint="Username"
-            android:padding="10dp"/>
+            android:layout_margin="10dp">
 
-        <EditText
-            android:id="@+id/edit_text_email_new"
+            <EditText
+                android:id="@+id/edit_text_username_new"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/edit_text_rounded_corners"
+                android:hint="Username"
+                android:padding="10dp"/>
+
+            <ProgressBar
+                android:id="@+id/progressBar_username"
+                style="?android:attr/progressBarStyleSmallInverse"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_alignBottom="@id/edit_text_username_new"
+                android:layout_alignRight="@id/edit_text_username_new"
+                android:layout_alignTop="@id/edit_text_username_new"
+                android:visibility="invisible"
+                android:padding="10dp"/>
+        </RelativeLayout>
+
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:layout_margin="10dp"
-            android:background="@drawable/edit_text_rounded_corners"
-            android:hint="Email Address"
-            android:inputType="textEmailAddress"
-            android:padding="10dp"/>
+            android:layout_margin="10dp">
+
+            <EditText
+                android:id="@+id/edit_text_email_new"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/edit_text_rounded_corners"
+                android:hint="Email Address"
+                android:inputType="textEmailAddress"
+                android:padding="10dp"/>
+
+            <ProgressBar
+                android:id="@+id/progressBar_email"
+                style="?android:attr/progressBarStyleSmallInverse"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_alignBottom="@id/edit_text_email_new"
+                android:layout_alignRight="@id/edit_text_email_new"
+                android:layout_alignTop="@id/edit_text_email_new"
+                android:visibility="invisible"
+                android:padding="10dp"/>
+        </RelativeLayout>
 
         <EditText
             android:id="@+id/edit_text_password_new"

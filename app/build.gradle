@@ -17,6 +17,14 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+
+        packagingOptions {
+            exclude 'META-INF/ASL2.0'
+            exclude 'META-INF/LICENSE'
+            exclude 'META-INF/license.txt'
+            exclude 'META-INF/NOTICE'
+            exclude 'META-INF/notice.txt'
+        }
     }
 }
 
@@ -26,6 +34,8 @@ dependencies {
     compile 'com.android.support:appcompat-v7:23.1.1'
     compile libraries.espressoCore
     compile libraries.testRunner
+    compile libraries.springRestTemplate
+    compile libraries.GSON
 }
 
 configurations.all {

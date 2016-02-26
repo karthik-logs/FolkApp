@@ -6,6 +6,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -13,9 +15,15 @@ import android.widget.ProgressBar;
 import android.widget.ToggleButton;
 import android.widget.ViewSwitcher;
 
+import com.karthyk.folkit.ILoginCallback;
 import com.karthyk.folkit.R;
+import com.karthyk.folkit.presenter.ILoginPresenter;
+import com.karthyk.folkit.presenter.LoginPresenter;
+import com.karthyk.folkit.transaction.CredentialTransaction;
+import com.karthyk.folkit.view.ILoginView;
 
-public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
+public class LoginActivity extends AppCompatActivity implements ILoginView, View.OnClickListener,
+    ILoginCallback {
 
   private static final String TAG = LoginActivity.class.getSimpleName();
   private ViewSwitcher viewSwitcher;
@@ -31,15 +39,21 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
   private ProgressBar progressBar;
   private ProgressBar progressBarNew;
+  private ProgressBar progressBarUsername;
+  private ProgressBar progressBarEmail;
+
+  private ILoginPresenter loginPresenter;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_login);
+    loginPresenter = new LoginPresenter(this, this);
     injectViews();
   }
 
-  private void injectViews() {
+  @Override
+  public void injectViews() {
     viewSwitcher = (ViewSwitcher) findViewById(R.id.view_switcher);
     ToggleButton toggleButton = (ToggleButton) findViewById(R.id.toggle_sign_up_sign_in);
     toggleButton.setOnClickListener(this);
@@ -47,15 +61,20 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     btnSignIn.setOnClickListener(this);
     btnSignUp = (Button) findViewById(R.id.btn_sign_up);
     btnSignUp.setOnClickListener(this);
+    btnSignUp.setEnabled(false);
     etUsername = (EditText) findViewById(R.id.edit_text_username);
     etPassword = (EditText) findViewById(R.id.edit_text_password);
     etUsernameNew = (EditText) findViewById(R.id.edit_text_username_new);
     etPasswordNew = (EditText) findViewById(R.id.edit_text_password_new);
     etEmail = (EditText) findViewById(R.id.edit_text_email_new);
+    clearOk(etUsernameNew, etEmail);
     etConfirmPassword = (EditText) findViewById(R.id.edit_text_confirm_password);
-    clearError(etUsername, etPassword, etUsernameNew, etPasswordNew, etEmail, etConfirmPassword);
+    clearError(etUsername, etPassword, etPasswordNew, etConfirmPassword, etUsernameNew, etEmail);
     progressBar = (ProgressBar) findViewById(R.id.progressBar);
     progressBarNew = (ProgressBar) findViewById(R.id.progressBar_new);
+    progressBarUsername = (ProgressBar) findViewById(R.id.progressBar_username);
+    progressBarEmail = (ProgressBar) findViewById(R.id.progressBar_email);
+    loginPresenter.onViewReady();
   }
 
   private Drawable getErrorIcon() {
@@ -70,16 +89,54 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     return errorIcon;
   }
 
-  private void setErrorText(EditText editText, String errorMsg) {
+  private Drawable getOkIcon() {
+    Drawable errorIcon;
+    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+      errorIcon = getDrawable(R.drawable.ic_check_circle);
+    } else {
+      errorIcon = getResources().getDrawable(R.drawable.ic_check_circle);
+    }
+    assert errorIcon != null;
+    errorIcon.setBounds(0, 0, errorIcon.getIntrinsicWidth(), errorIcon.getIntrinsicHeight());
+    return errorIcon;
+  }
 
+  @Override
+  public void setErrorText(EditText editText, String errorMsg) {
     editText.setError(errorMsg, getErrorIcon());
   }
 
-  private void clearError(EditText... params) {
+  @Override
+  public void setAvailable(EditText editText, String msg) {
+    showProgressBar(editText, View.INVISIBLE);
+    editText.setError(msg, getOkIcon());
+    if(!TextUtils.isEmpty(etUsernameNew.getError()) && !TextUtils.isEmpty(etEmail.getError())) {
+      if (TextUtils.equals(etUsernameNew.getError().toString(),
+          getString(R.string.available_username))
+          && TextUtils.equals(etEmail.getError().toString(),
+          getString(R.string.available_email))) {
+        btnSignUp.setEnabled(true);
+      }
+    }
+  }
+
+  private void showProgressBar(EditText editText, int visibility) {
+    switch (editText.getId()) {
+      case R.id.edit_text_username_new:
+        progressBarUsername.setVisibility(visibility);
+        break;
+      case R.id.edit_text_email_new:
+        progressBarEmail.setVisibility(visibility);
+        break;
+      default:
+    }
+  }
+
+  @Override
+  public void clearError(EditText... params) {
     for (final EditText editText : params) {
       editText.addTextChangedListener(new TextWatcher() {
         @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
         }
 
         @Override public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -93,18 +150,52 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
   }
 
-  @Override public void onClick(View v) {
+  @Override
+  public void clearOk(EditText... params) {
+    for (EditText editText : params) {
+      editText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        @Override public void onFocusChange(View v, boolean hasFocus) {
+          if (!hasFocus) {
+            switch (v.getId()) {
+              case R.id.edit_text_username_new:
+                if(!TextUtils.isEmpty(etUsernameNew.getText().toString())) {
+                  btnSignUp.setEnabled(false);
+                  progressBarUsername.setVisibility(View.VISIBLE);
+                  loginPresenter.onNewUsername(etUsernameNew.getText().toString());
+                }
+                break;
+              case R.id.edit_text_email_new:
+                if(!TextUtils.isEmpty(etEmail.getText().toString())) {
+                  if(!Patterns.EMAIL_ADDRESS.matcher(etEmail.getText()).matches()) {
+                    setErrorText(etEmail, "Not a valid email");
+                    return;
+                  }
+                  btnSignUp.setEnabled(false);
+                  progressBarEmail.setVisibility(View.VISIBLE);
+                  loginPresenter.onNewEmail(etEmail.getText().toString());
+                }
+                break;
+              default:
+            }
+          }
+        }
+    });
+  }
+}
+
+  @Override
+  public void onClick(View v) {
     switch (v.getId()) {
       case R.id.btn_sign_in:
         if (!checkForNullValues(etUsername, etPassword)) {
-          signIn();
+          onSignInClicked();
         } else {
           renderButtonsAfterError();
         }
         break;
       case R.id.btn_sign_up:
         if (!checkForNullValues(etUsernameNew, etPasswordNew, etEmail, etConfirmPassword)) {
-          signUp();
+          onSignUpClicked();
         } else {
           renderButtonsAfterError();
         }
@@ -116,7 +207,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
   }
 
-  private boolean checkForNullValues(EditText... params) {
+  @Override
+  public boolean checkForNullValues(EditText... params) {
     boolean result = false;
     for (EditText param : params) {
       switch (param.getId()) {
@@ -162,12 +254,22 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     return result;
   }
 
-  private void signIn() {
+  @Override
+  public void onSignInClicked() {
+    //new CredentialTransaction.HTTPPostRequestTask().execute();
+//    List<Credential> userModelList = null;
+//    try {
+//      userModelList = new CredentialTransaction.HTTPGetRequestTask().execute().get();
+//    } catch (InterruptedException | ExecutionException e) {
+//      e.printStackTrace();
+//    }
+//    Log.i(TAG, "onSignInClicked: " + userModelList.get(1).getUsername());
     btnSignIn.setVisibility(View.GONE);
     progressBar.setVisibility(View.VISIBLE);
   }
 
-  private void signUp() {
+  @Override
+  public void onSignUpClicked() {
     if (!TextUtils.equals(etPasswordNew.getText().toString(),
         etConfirmPassword.getText().toString())) {
       etConfirmPassword.setError(getString(R.string.error_password_mismatch), getErrorIcon());
@@ -177,10 +279,37 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     btnSignUp.setVisibility(View.GONE);
   }
 
-  private void renderButtonsAfterError() {
+  @Override
+  public void renderButtonsAfterError() {
     progressBarNew.setVisibility(View.INVISIBLE);
     btnSignUp.setVisibility(View.VISIBLE);
     btnSignIn.setVisibility(View.VISIBLE);
     progressBarNew.setVisibility(View.INVISIBLE);
+  }
+
+  @Override public void onValidationError(int error) {
+    switch (error) {
+      case ILoginCallback.ERROR_USERNAME_EXIST:
+        setErrorText(etUsernameNew, "Username not available!");
+        progressBarUsername.setVisibility(View.INVISIBLE);
+        break;
+      case ILoginCallback.ERROR_EMAIL_EXIST:
+        progressBarEmail.setVisibility(View.INVISIBLE);
+        setErrorText(etEmail, "Try signing in with this Email Address!");
+        break;
+    }
+  }
+
+  @Override public void onSuccessfulValidation(int success) {
+    switch (success) {
+      case ILoginCallback.SUCCESS_NEW_USERNAME:
+        progressBarUsername.setVisibility(View.INVISIBLE);
+        setAvailable(etUsernameNew, getString(R.string.available_username));
+        break;
+      case ILoginCallback.SUCCESS_NEW_EMAIL:
+        progressBarEmail.setVisibility(View.INVISIBLE);
+        setAvailable(etEmail, getString(R.string.available_email));
+        break;
+    }
   }
 }

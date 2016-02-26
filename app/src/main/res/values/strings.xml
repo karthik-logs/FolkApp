@@ -4,7 +4,12 @@
     <string name="txt_sign_up">Sign Up</string>
     <string name="action_settings">Settings</string>
     <string name="error_empty_username">Username cannot be empty!</string>
-    <string name="error_empty_email">Please enter a valid email address</string>
+    <string name="error_empty_email">Not a valid email</string>
     <string name="error_empty_password">Password must be atleast 6 characters long !</string>
     <string name="error_password_mismatch">Passwords must match !</string>
+    <string name="available_username">Username is available</string>
+    <string name="available_email">Email may be valid</string>
+
+
+    <string name="action_refresh">Refresh</string>
 </resources>

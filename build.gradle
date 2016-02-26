@@ -25,5 +25,9 @@ task clean(type: Delete) {
 ext.libraries = [
         appCompatV23 : 'com.android.support:appcompat-v7:23.1.1',
         espressoCore: 'com.android.support.test.espresso:espresso-core:2.2.1',
-        testRunner: 'com.android.support.test:runner:0.4.1'
+        testRunner: 'com.android.support.test:runner:0.4.1',
+        springRestTemplate: 'org.springframework.android:spring-android-rest-template:1.0.1' +
+                '.RELEASE',
+        jacksonJSON: 'com.fasterxml.jackson.core:jackson-databind:2.3.2',
+        GSON: 'com.google.code.gson:gson:2.2.4'
 ]

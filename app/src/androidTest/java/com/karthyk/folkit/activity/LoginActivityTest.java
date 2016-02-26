@@ -41,15 +41,20 @@ public class LoginActivityTest {
   }
 
   @Test
-  public void changeUsernameText_SignInLayout() {
+  public void Input_Fields_Should_be_Visible_SignUpLayout() {
+    onView(withId(R.id.toggle_sign_up_sign_in)).perform(click());
+    onView(withId(R.id.edit_text_username_new)).check(matches(isDisplayed()));
+    onView(withId(R.id.edit_text_email_new)).check(matches(isDisplayed()));
+    onView(withId(R.id.edit_text_password_new)).check(matches(isDisplayed()));
+    onView(withId(R.id.edit_text_confirm_password)).check(matches(isDisplayed()));
+  }
+
+  @Test
+  public void Input_Fields_Should_be_Editable_SignInLayout() {
     onView(withId(R.id.edit_text_username)).check(matches(isDisplayed()));
     onView(withId(R.id.edit_text_username)).perform(typeText(mStringToBeTyped),
         closeSoftKeyboard());
     onView(withId(R.id.edit_text_username)).check(matches(withText(mStringToBeTyped)));
-  }
-
-  @Test
-  public void changePasswordText_SignInLayout() {
     onView(withId(R.id.edit_text_password)).check(matches(isDisplayed()));
     onView(withId(R.id.edit_text_password)).perform(typeText(mStringToBeTyped),
         closeSoftKeyboard());
@@ -57,91 +62,33 @@ public class LoginActivityTest {
   }
 
   @Test
-  public void Buttons_Should_be_Visible_SignInLayout() {
-    onView(withId(R.id.btn_sign_in)).check(matches(isDisplayed()));
-    onView(withId(R.id.toggle_sign_up_sign_in)).check(matches(isDisplayed()));
-  }
-
-  @Test
-  public void Should_Display_Error_OnEmptyUsername_When_SignIn_Pressed_SignInLayout() {
-    onView(withId(R.id.btn_sign_in)).perform(click());
-    onView(withId(R.id.edit_text_username)).check(matches(withHint(
-        mActivityRule.getActivity().getString(R.string.error_empty_username))));
-  }
-
-  @Test
-  public void Should_Display_Error_OnEmptyPassword_When_SignIn_Pressed_SignInLayout() {
-    onView(withId(R.id.btn_sign_in)).perform(click());
-    onView(withId(R.id.edit_text_password)).check(matches(withHint(
-        mActivityRule.getActivity().getString(R.string.error_empty_password))));
-  }
-
-  @Test
-  public void Should_Display_ProgressBar_On_SignIn_Pressed_SignInLayout() {
-    onView(withId(R.id.edit_text_username)).perform(typeText(mStringToBeTyped),
-        closeSoftKeyboard());
-    onView(withId(R.id.edit_text_password)).perform(typeText(mStringToBeTyped),
-        closeSoftKeyboard());
-    onView(withId(R.id.btn_sign_in)).perform(click());
-    onView(withId(R.id.progressBar)).check(matches(isDisplayed()));
-  }
-
-  @Test
-  public void Should_Display_SignUpLayout_When_Toggle_Pressed_SignInLayout() {
-    onView(withId(R.id.toggle_sign_up_sign_in)).perform(click());
-    onView(withId(R.id.layout_sign_up)).check(matches(isDisplayed()));
-  }
-
-  @Test
-  public void Should_Display_SignInLayout_When_Toggle_Released_SignUpLayout() {
-    onView(withId(R.id.toggle_sign_up_sign_in)).perform(click());
-    onView(withId(R.id.toggle_sign_up_sign_in)).perform(click());
-    onView(withId(R.id.layout_sign_in)).check(matches(isDisplayed()));
-  }
-
-  @Test
-  public void InputFields_Should_be_Visible_SignUpLayout() {
-    onView(withId(R.id.toggle_sign_up_sign_in)).perform(click());
-    onView(withId(R.id.edit_text_username_new)).check(matches(isDisplayed()));
-    onView(withId(R.id.edit_text_password_new)).check(matches(isDisplayed()));
-    onView(withId(R.id.edit_text_email_new)).check(matches(isDisplayed()));
-    onView(withId(R.id.edit_text_confirm_password)).check(matches(isDisplayed()));
-  }
-
-  @Test
-  public void changeUsernameText_SignUpLayout() {
+  public void Input_Fields_Should_be_Editable_SignUpLayout() {
     onView(withId(R.id.toggle_sign_up_sign_in)).perform(click());
     onView(withId(R.id.edit_text_username_new)).check(matches(isDisplayed()));
     onView(withId(R.id.edit_text_username_new)).perform(typeText(mStringToBeTyped),
         closeSoftKeyboard());
     onView(withId(R.id.edit_text_username_new)).check(matches(withText(mStringToBeTyped)));
-  }
 
-  @Test
-  public void changeEmailText_SignUpLayout() {
-    onView(withId(R.id.toggle_sign_up_sign_in)).perform(click());
     onView(withId(R.id.edit_text_email_new)).check(matches(isDisplayed()));
     onView(withId(R.id.edit_text_email_new)).perform(typeText(mStringToBeTyped),
         closeSoftKeyboard());
     onView(withId(R.id.edit_text_email_new)).check(matches(withText(mStringToBeTyped)));
-  }
 
-  @Test
-  public void changePasswordText_SignUpLayout() {
-    onView(withId(R.id.toggle_sign_up_sign_in)).perform(click());
     onView(withId(R.id.edit_text_password_new)).check(matches(isDisplayed()));
     onView(withId(R.id.edit_text_password_new)).perform(typeText(mStringToBeTyped),
         closeSoftKeyboard());
     onView(withId(R.id.edit_text_password_new)).check(matches(withText(mStringToBeTyped)));
-  }
 
-  @Test
-  public void changeConfirmPasswordText_SignUpLayout() {
-    onView(withId(R.id.toggle_sign_up_sign_in)).perform(click());
     onView(withId(R.id.edit_text_confirm_password)).check(matches(isDisplayed()));
     onView(withId(R.id.edit_text_confirm_password)).perform(typeText(mStringToBeTyped),
         closeSoftKeyboard());
     onView(withId(R.id.edit_text_confirm_password)).check(matches(withText(mStringToBeTyped)));
+  }
+
+  @Test
+  public void Buttons_Should_be_Visible_SignInLayout() {
+    onView(withId(R.id.btn_sign_in)).check(matches(isDisplayed()));
+    onView(withId(R.id.toggle_sign_up_sign_in)).check(matches(isDisplayed()));
   }
 
   @Test
@@ -152,52 +99,83 @@ public class LoginActivityTest {
   }
 
   @Test
-  public void Should_Display_Error_OnEmptyUsername_When_SignUp_Pressed_SignUpLayout() {
-    onView(withId(R.id.toggle_sign_up_sign_in)).perform(click());
-    onView(withId(R.id.btn_sign_up)).perform(click());
-    onView(withId(R.id.edit_text_username_new)).check(matches(withHint(
+  public void Should_Display_Error_OnEmptyInputFields_SignInLayout() {
+    onView(withId(R.id.btn_sign_in)).perform(click());
+    onView(withId(R.id.edit_text_username)).check(matches(withHint(
         mActivityRule.getActivity().getString(R.string.error_empty_username))));
+    onView(withId(R.id.edit_text_password)).check(matches(withHint(
+        mActivityRule.getActivity().getString(R.string.error_empty_password))));
   }
 
   @Test
-  public void Should_Display_Error_OnEmptyEmail_When_SignUp_Pressed_SignUpLayout() {
+  public void Should_Display_Error_On_Invalid_Email_SignUpLayout() {
     onView(withId(R.id.toggle_sign_up_sign_in)).perform(click());
-    onView(withId(R.id.btn_sign_up)).perform(click());
-    onView(withId(R.id.edit_text_email_new)).check(matches(withHint(
-        mActivityRule.getActivity().getString(R.string.error_empty_email))));
+    onView(withId(R.id.edit_text_email_new)).perform(typeText(mStringToBeTyped))
+        .perform(closeSoftKeyboard());
+    onView(withId(R.id.edit_text_password_new)).perform(typeText(mStringToBeTyped))
+        .perform(closeSoftKeyboard());
+    onView(withId(R.id.edit_text_email_new)).check(matches(withHint(mActivityRule.getActivity()
+        .getString(R.string.error_empty_email))));
   }
 
   @Test
-  public void Should_Display_Error_OnEmptyPassword_When_SignUp_Pressed_SignUpLayout() {
+  public void Should_Display_Error_On_Empty_Password_SignUpLayout() {
     onView(withId(R.id.toggle_sign_up_sign_in)).perform(click());
+    onView(withId(R.id.edit_text_username_new)).perform(typeText(mStringToBeTyped))
+        .perform(closeSoftKeyboard());
+    onView(withId(R.id.edit_text_email_new)).perform(typeText(mStringToBeTyped + "@default.com"))
+        .perform(closeSoftKeyboard());
+    onView(withId(R.id.edit_text_confirm_password)).perform(typeText(mStringToBeTyped))
+        .perform(closeSoftKeyboard());
     onView(withId(R.id.btn_sign_up)).perform(click());
     onView(withId(R.id.edit_text_password_new)).check(matches(withHint(
         mActivityRule.getActivity().getString(R.string.error_empty_password))));
   }
 
   @Test
-  public void Should_Display_Error_OnPasswordMismatch_When_SignUp_Pressed_SignUpLayout() {
+  public void Should_Display_Error_On_PasswordMismatch_SignUpLayout() {
     onView(withId(R.id.toggle_sign_up_sign_in)).perform(click());
+    onView(withId(R.id.edit_text_username_new)).perform(typeText(mStringToBeTyped))
+        .perform(closeSoftKeyboard());
+    onView(withId(R.id.edit_text_email_new)).perform(typeText(mStringToBeTyped + "@default.com"))
+        .perform(closeSoftKeyboard());
+    onView(withId(R.id.edit_text_password_new)).perform(typeText(mStringToBeTyped))
+        .perform(closeSoftKeyboard());
     onView(withId(R.id.btn_sign_up)).perform(click());
-    onView(withId(R.id.edit_text_password_new)).perform(typeText(mStringToBeTyped),
-        closeSoftKeyboard());
     onView(withId(R.id.edit_text_confirm_password)).check(matches(withHint(
         mActivityRule.getActivity().getString(R.string.error_password_mismatch))));
   }
 
   @Test
-  public void Should_Display_ProgressBar_On_SignUp_Pressed_SignUpLayout() {
+  public void Should_Display_UsernameAvailable_SignUpLayout() {
     onView(withId(R.id.toggle_sign_up_sign_in)).perform(click());
-    onView(withId(R.id.edit_text_username_new)).perform(typeText(mStringToBeTyped),
+    onView(withId(R.id.edit_text_username_new)).perform(typeText(mStringToBeTyped))
+        .perform(closeSoftKeyboard());
+    onView(withId(R.id.edit_text_email_new)).perform(typeText(mStringToBeTyped))
+        .perform(closeSoftKeyboard());
+    onView(withId(R.id.edit_text_username_new)).check(matches(withHint(
+        mActivityRule.getActivity().getString(R.string.available_username))));
+  }
+
+  @Test
+  public void Should_Display_EmailAvailable_SignUpLayout() {
+    onView(withId(R.id.toggle_sign_up_sign_in)).perform(click());
+    onView(withId(R.id.edit_text_email_new)).perform(typeText(mStringToBeTyped + "@default.com"))
+        .perform(closeSoftKeyboard());
+    onView(withId(R.id.edit_text_username_new)).perform(typeText(mStringToBeTyped))
+        .perform(closeSoftKeyboard());
+    onView(withId(R.id.edit_text_email_new)).check(matches(withHint(
+        mActivityRule.getActivity().getString(R.string.available_email))));
+  }
+
+  @Test
+  public void Should_Display_ProgressBar_On_SignIn_Pressed_SignInLayout() {
+    onView(withId(R.id.edit_text_username)).perform(typeText(mStringToBeTyped),
         closeSoftKeyboard());
-    onView(withId(R.id.edit_text_password_new)).perform(typeText(mStringToBeTyped),
+    onView(withId(R.id.edit_text_password)).perform(typeText(mStringToBeTyped),
         closeSoftKeyboard());
-    onView(withId(R.id.edit_text_email_new)).perform(typeText(mStringToBeTyped),
-        closeSoftKeyboard());
-    onView(withId(R.id.edit_text_confirm_password)).perform(typeText(mStringToBeTyped),
-        closeSoftKeyboard());
-    onView(withId(R.id.btn_sign_up)).perform(click());
-    onView(withId(R.id.progressBar_new)).check(matches(isDisplayed()));
+    onView(withId(R.id.btn_sign_in)).perform(click());
+    onView(withId(R.id.progressBar)).check(matches(isDisplayed()));
   }
 
   public static Matcher<View> withHint(final String expectedHint) {
