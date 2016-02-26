@@ -4,11 +4,17 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.karthyk.folkit.callbacks.ILoginCallback;
+import com.karthyk.folkit.interactor.ILoginInteractor;
+import com.karthyk.folkit.interactor.LoginInteractor;
+import com.karthyk.folkit.transaction.CredentialTransaction;
+import com.karthyk.folkit.utils.EncodeUtils;
 import com.karthyk.folkit.utils.RestUtils;
 import com.karthyk.folkit.view.ILoginView;
 
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
+
+import java.security.NoSuchAlgorithmException;
 
 /**
  * Created by karthik on 20/2/16.
@@ -18,10 +24,12 @@ public class LoginPresenter implements ILoginPresenter {
   private static final String TAG = LoginPresenter.class.getSimpleName();
   public ILoginView loginView;
   public ILoginCallback loginCallback;
+  private ILoginInteractor loginInteractor;
 
   public LoginPresenter(ILoginView loginView, ILoginCallback loginCallback) {
     this.loginView = loginView;
     this.loginCallback = loginCallback;
+    this.loginInteractor = new LoginInteractor();
   }
 
   @Override
@@ -35,7 +43,12 @@ public class LoginPresenter implements ILoginPresenter {
 
   @Override
   public void onSignUpClicked(String username, String password, String email) {
-
+    try {
+      String encodedPassword = EncodeUtils.encodePassword(password);
+      new CredentialTransaction.SignUpUser(username, encodedPassword, email).execute(loginCallback);
+    } catch (NoSuchAlgorithmException e) {
+      Log.d(TAG, "onSignUpClicked: " + e.toString());
+    }
   }
 
   @Override

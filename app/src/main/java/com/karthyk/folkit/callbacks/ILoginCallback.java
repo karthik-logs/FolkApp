@@ -10,4 +10,6 @@ public interface ILoginCallback {
   void onValidationError(int error);
 
   void onSuccessfulValidation(int success);
+
+  void onSignUpSuccessful();
 }

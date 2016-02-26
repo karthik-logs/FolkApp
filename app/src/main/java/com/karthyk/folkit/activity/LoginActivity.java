@@ -273,6 +273,8 @@ public class LoginActivity extends AppCompatActivity implements ILoginView, View
       etConfirmPassword.setError(getString(R.string.error_password_mismatch), getErrorIcon());
       return;
     }
+    loginPresenter.onSignUpClicked(etUsernameNew.getText().toString(),
+        etPasswordNew.getText().toString(), etEmail.getText().toString());
     progressBarNew.setVisibility(View.VISIBLE);
     btnSignUp.setVisibility(View.GONE);
   }
@@ -285,7 +287,8 @@ public class LoginActivity extends AppCompatActivity implements ILoginView, View
     progressBarNew.setVisibility(View.INVISIBLE);
   }
 
-  @Override public void onValidationError(int error) {
+  @Override
+  public void onValidationError(int error) {
     switch (error) {
       case ILoginCallback.ERROR_USERNAME_EXIST:
         setErrorText(etUsernameNew, "Username not available!");
@@ -298,7 +301,8 @@ public class LoginActivity extends AppCompatActivity implements ILoginView, View
     }
   }
 
-  @Override public void onSuccessfulValidation(int success) {
+  @Override
+  public void onSuccessfulValidation(int success) {
     switch (success) {
       case ILoginCallback.SUCCESS_NEW_USERNAME:
         progressBarUsername.setVisibility(View.INVISIBLE);
@@ -309,5 +313,10 @@ public class LoginActivity extends AppCompatActivity implements ILoginView, View
         setAvailable(etEmail, getString(R.string.available_email));
         break;
     }
+  }
+
+  @Override
+  public void onSignUpSuccessful() {
+    progressBarNew.setVisibility(View.INVISIBLE);
   }
 }

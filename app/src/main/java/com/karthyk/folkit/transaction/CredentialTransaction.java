@@ -3,7 +3,9 @@ package com.karthyk.folkit.transaction;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.karthyk.folkit.callbacks.ILoginCallback;
 import com.karthyk.folkit.model.Credential;
+import com.karthyk.folkit.utils.RestUtils;
 
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.http.converter.json.GsonHttpMessageConverter;
@@ -52,6 +54,48 @@ public class CredentialTransaction {
         Log.e(TAG, "doInBackground: " + e.toString());
       }
       return null;
+    }
+  }
+
+  public static class SignUpUser extends AsyncTask<ILoginCallback, Void, Void> {
+    String url = RestUtils.getRootURL();
+
+    final String username;
+    final String password;
+    final String email;
+
+    ILoginCallback loginCallback;
+
+    public SignUpUser(String username, String password, String email) {
+      this.username = username;
+      this.password = password;
+      this.email = email;
+    }
+
+    @Override protected Void doInBackground(ILoginCallback... params) {
+      try {
+        loginCallback = params[0];
+        url = url + "signUp/";
+        Log.d(TAG, "SignUpURL: " + url);
+        RestTemplate restTemplate = new RestTemplate();
+        restTemplate.getMessageConverters().add(new GsonHttpMessageConverter());
+        restTemplate.getMessageConverters().add(new StringHttpMessageConverter());
+        Credential credential = new Credential();
+        credential.setUsername(this.username);
+        credential.setPassword(this.password);
+        credential.setEmail(this.email);
+        Credential newCredential = restTemplate.postForObject(url, credential, Credential.class);
+        Log.d(TAG, newCredential.getAuthToken());
+        Log.i(TAG, "doInBackground: + SignedUp");
+      } catch (Exception e) {
+        Log.e(TAG, "doInBackground: " + e.toString());
+      }
+      return null;
+    }
+
+    @Override protected void onPostExecute(Void aVoid) {
+      super.onPostExecute(aVoid);
+      loginCallback.onSignUpSuccessful();
     }
   }
 }

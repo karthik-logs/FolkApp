@@ -6,6 +6,7 @@ public class Credential {
   private String username;
   private String password;
   private String email;
+  private String authToken;
 
   public String getUsername() {
     return username;
@@ -37,5 +38,13 @@ public class Credential {
 
   public void setId(String id) {
     this.id = id;
+  }
+
+  public String getAuthToken() {
+    return authToken;
+  }
+
+  public void setAuthToken(String authToken) {
+    this.authToken = authToken;
   }
 }
