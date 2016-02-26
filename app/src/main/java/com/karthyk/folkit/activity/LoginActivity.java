@@ -6,7 +6,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
@@ -15,11 +14,10 @@ import android.widget.ProgressBar;
 import android.widget.ToggleButton;
 import android.widget.ViewSwitcher;
 
-import com.karthyk.folkit.ILoginCallback;
+import com.karthyk.folkit.callbacks.ILoginCallback;
 import com.karthyk.folkit.R;
 import com.karthyk.folkit.presenter.ILoginPresenter;
 import com.karthyk.folkit.presenter.LoginPresenter;
-import com.karthyk.folkit.transaction.CredentialTransaction;
 import com.karthyk.folkit.view.ILoginView;
 
 public class LoginActivity extends AppCompatActivity implements ILoginView, View.OnClickListener,
@@ -110,7 +108,7 @@ public class LoginActivity extends AppCompatActivity implements ILoginView, View
   public void setAvailable(EditText editText, String msg) {
     showProgressBar(editText, View.INVISIBLE);
     editText.setError(msg, getOkIcon());
-    if(!TextUtils.isEmpty(etUsernameNew.getError()) && !TextUtils.isEmpty(etEmail.getError())) {
+    if (!TextUtils.isEmpty(etUsernameNew.getError()) && !TextUtils.isEmpty(etEmail.getError())) {
       if (TextUtils.equals(etUsernameNew.getError().toString(),
           getString(R.string.available_username))
           && TextUtils.equals(etEmail.getError().toString(),
@@ -158,15 +156,15 @@ public class LoginActivity extends AppCompatActivity implements ILoginView, View
           if (!hasFocus) {
             switch (v.getId()) {
               case R.id.edit_text_username_new:
-                if(!TextUtils.isEmpty(etUsernameNew.getText().toString())) {
+                if (!TextUtils.isEmpty(etUsernameNew.getText().toString())) {
                   btnSignUp.setEnabled(false);
                   progressBarUsername.setVisibility(View.VISIBLE);
                   loginPresenter.onNewUsername(etUsernameNew.getText().toString());
                 }
                 break;
               case R.id.edit_text_email_new:
-                if(!TextUtils.isEmpty(etEmail.getText().toString())) {
-                  if(!Patterns.EMAIL_ADDRESS.matcher(etEmail.getText()).matches()) {
+                if (!TextUtils.isEmpty(etEmail.getText().toString())) {
+                  if (!Patterns.EMAIL_ADDRESS.matcher(etEmail.getText()).matches()) {
                     setErrorText(etEmail, "Not a valid email");
                     return;
                   }
@@ -179,9 +177,9 @@ public class LoginActivity extends AppCompatActivity implements ILoginView, View
             }
           }
         }
-    });
+      });
+    }
   }
-}
 
   @Override
   public void onClick(View v) {

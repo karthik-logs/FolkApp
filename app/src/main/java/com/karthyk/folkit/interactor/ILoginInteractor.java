@@ -5,5 +5,6 @@ package com.karthyk.folkit.interactor;
  */
 public interface ILoginInteractor {
   void doSignIn();
+
   void doSignUp();
 }

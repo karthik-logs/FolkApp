@@ -5,8 +5,12 @@ package com.karthyk.folkit.presenter;
  */
 public interface ILoginPresenter {
   void onViewReady();
+
   void onSignInClicked(String username, String password);
+
   void onSignUpClicked(String username, String password, String email);
+
   void onNewUsername(String username);
+
   void onNewEmail(String email);
 }

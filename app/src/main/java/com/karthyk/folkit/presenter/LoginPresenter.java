@@ -3,7 +3,8 @@ package com.karthyk.folkit.presenter;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.karthyk.folkit.ILoginCallback;
+import com.karthyk.folkit.callbacks.ILoginCallback;
+import com.karthyk.folkit.utils.RestUtils;
 import com.karthyk.folkit.view.ILoginView;
 
 import org.springframework.http.converter.StringHttpMessageConverter;
@@ -66,7 +67,7 @@ public class LoginPresenter implements ILoginPresenter {
   }
 
   public class SignUpValidationTask extends AsyncTask<Void, Void, String> {
-    String url = "http://10.21.11.72:8080/";
+    String url = RestUtils.getRootURL();
     String checkUrl;
 
     public SignUpValidationTask(String param, String checkUrl) {

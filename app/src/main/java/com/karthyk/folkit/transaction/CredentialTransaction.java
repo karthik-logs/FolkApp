@@ -19,6 +19,7 @@ public class CredentialTransaction {
   public static class HTTPGetRequestTask extends AsyncTask<Void, Void, List<Credential>> {
 
     final String url = "http://10.21.11.72:8080/user";
+
     @Override protected List<Credential> doInBackground(Void... params) {
       try {
         RestTemplate restTemplate = new RestTemplate();

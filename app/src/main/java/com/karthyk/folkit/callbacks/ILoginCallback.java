@@ -1,4 +1,4 @@
-package com.karthyk.folkit;
+package com.karthyk.folkit.callbacks;
 
 public interface ILoginCallback {
   int ERROR_USERNAME_EXIST = 0;
