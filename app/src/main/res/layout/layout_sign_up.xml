@@ -18,11 +18,10 @@
 
             <EditText
                 android:id="@+id/edit_text_username_new"
+                style="@style/EditTextConditions"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@drawable/edit_text_rounded_corners"
-                android:hint="Username"
-                android:padding="10dp"/>
+                android:hint="@string/hint_username"/>
 
             <ProgressBar
                 android:id="@+id/progressBar_username"
@@ -32,8 +31,8 @@
                 android:layout_alignBottom="@id/edit_text_username_new"
                 android:layout_alignRight="@id/edit_text_username_new"
                 android:layout_alignTop="@id/edit_text_username_new"
-                android:visibility="invisible"
-                android:padding="10dp"/>
+                android:padding="10dp"
+                android:visibility="invisible"/>
         </RelativeLayout>
 
         <RelativeLayout
@@ -43,12 +42,11 @@
 
             <EditText
                 android:id="@+id/edit_text_email_new"
+                style="@style/EditTextConditions"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@drawable/edit_text_rounded_corners"
-                android:hint="Email Address"
-                android:inputType="textEmailAddress"
-                android:padding="10dp"/>
+                android:hint="@string/hint_email_address"
+                android:inputType="textEmailAddress"/>
 
             <ProgressBar
                 android:id="@+id/progressBar_email"
@@ -58,29 +56,27 @@
                 android:layout_alignBottom="@id/edit_text_email_new"
                 android:layout_alignRight="@id/edit_text_email_new"
                 android:layout_alignTop="@id/edit_text_email_new"
-                android:visibility="invisible"
-                android:padding="10dp"/>
+                android:padding="10dp"
+                android:visibility="invisible"/>
         </RelativeLayout>
 
         <EditText
             android:id="@+id/edit_text_password_new"
+            style="@style/EditTextConditions"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_margin="10dp"
-            android:background="@drawable/edit_text_rounded_corners"
-            android:hint="Password"
-            android:inputType="textPassword"
-            android:padding="10dp"/>
+            android:hint="@string/hint_password"
+            android:inputType="textPassword"/>
 
         <EditText
             android:id="@+id/edit_text_confirm_password"
+            style="@style/EditTextConditions"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_margin="10dp"
-            android:background="@drawable/edit_text_rounded_corners"
-            android:hint="Confirm Password"
-            android:inputType="textPassword"
-            android:padding="10dp"/>
+            android:hint="@string/hint_confirm_password"
+            android:inputType="textPassword"/>
 
         <Button
             android:id="@+id/btn_sign_up"
@@ -98,6 +94,5 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="invisible"/>
-
     </LinearLayout>
 </FrameLayout>

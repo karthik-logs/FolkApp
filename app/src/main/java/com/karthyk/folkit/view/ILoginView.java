@@ -2,9 +2,6 @@ package com.karthyk.folkit.view;
 
 import android.widget.EditText;
 
-/**
- * Created by karthik on 20/2/16.
- */
 public interface ILoginView {
   void injectViews();
 
@@ -23,4 +20,6 @@ public interface ILoginView {
   void onSignUpClicked();
 
   void renderButtonsAfterError();
+
+  void showSnackBar(String message);
 }

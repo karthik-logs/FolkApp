@@ -29,5 +29,7 @@ ext.libraries = [
         springRestTemplate: 'org.springframework.android:spring-android-rest-template:1.0.1' +
                 '.RELEASE',
         jacksonJSON: 'com.fasterxml.jackson.core:jackson-databind:2.3.2',
-        GSON: 'com.google.code.gson:gson:2.2.4'
+        jacksonMapper: 'org.codehaus.jackson:jackson-mapper-asl:1.9.13',
+        GSON: 'com.google.code.gson:gson:2.2.4',
+        topSnackBar: 'com.androidadvance:topsnackbar:0.0.9'
 ]

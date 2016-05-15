@@ -1,27 +1,39 @@
 package com.karthyk.folkit.activity;
 
+import android.accounts.AccountManager;
+import android.content.Context;
+import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.ToggleButton;
 import android.widget.ViewSwitcher;
 
-import com.karthyk.folkit.callbacks.ILoginCallback;
+import com.androidadvance.topsnackbar.TSnackbar;
 import com.karthyk.folkit.R;
+import com.karthyk.folkit.authentication.AuthenticationService;
+import com.karthyk.folkit.callbacks.ILoginCallback;
+import com.karthyk.folkit.model.Credential;
 import com.karthyk.folkit.presenter.ILoginPresenter;
 import com.karthyk.folkit.presenter.LoginPresenter;
+import com.karthyk.folkit.utils.RestUtils;
+import com.karthyk.folkit.utils.SessionUtils;
 import com.karthyk.folkit.view.ILoginView;
 
-public class LoginActivity extends AppCompatActivity implements ILoginView, View.OnClickListener,
-    ILoginCallback {
+public class LoginActivity extends AccountAuthenticatorActivity implements ILoginView,
+    View.OnClickListener, ILoginCallback {
 
   private static final String TAG = LoginActivity.class.getSimpleName();
   private ViewSwitcher viewSwitcher;
@@ -229,7 +241,8 @@ public class LoginActivity extends AppCompatActivity implements ILoginView, View
           }
           break;
         case R.id.edit_text_password_new:
-          if (TextUtils.isEmpty(etPasswordNew.getText().toString())) {
+          if (TextUtils.isEmpty(etPasswordNew.getText().toString())
+              || etPasswordNew.getText().toString().trim().length() < 6) {
             setErrorText(etPasswordNew, getString(R.string.error_empty_password));
             result = true;
           }
@@ -254,6 +267,10 @@ public class LoginActivity extends AppCompatActivity implements ILoginView, View
 
   @Override
   public void onSignInClicked() {
+    if (!RestUtils.isServerActive()) {
+      showSnackBar("No Internet Connection");
+      return;
+    }
     //new CredentialTransaction.HTTPPostRequestTask().execute();
 //    List<Credential> userModelList = null;
 //    try {
@@ -264,10 +281,17 @@ public class LoginActivity extends AppCompatActivity implements ILoginView, View
 //    Log.i(TAG, "onSignInClicked: " + userModelList.get(1).getUsername());
     btnSignIn.setVisibility(View.GONE);
     progressBar.setVisibility(View.VISIBLE);
+    closeKeyboard();
+    loginPresenter.onSignInClicked(etUsername.getText().toString(),
+        etPassword.getText().toString());
   }
 
   @Override
   public void onSignUpClicked() {
+    if (!RestUtils.isServerActive()) {
+      showSnackBar("Cannot connect to the server!");
+      return;
+    }
     if (!TextUtils.equals(etPasswordNew.getText().toString(),
         etConfirmPassword.getText().toString())) {
       etConfirmPassword.setError(getString(R.string.error_password_mismatch), getErrorIcon());
@@ -281,7 +305,7 @@ public class LoginActivity extends AppCompatActivity implements ILoginView, View
 
   @Override
   public void renderButtonsAfterError() {
-    progressBarNew.setVisibility(View.INVISIBLE);
+    progressBar.setVisibility(View.INVISIBLE);
     btnSignUp.setVisibility(View.VISIBLE);
     btnSignIn.setVisibility(View.VISIBLE);
     progressBarNew.setVisibility(View.INVISIBLE);
@@ -318,5 +342,48 @@ public class LoginActivity extends AppCompatActivity implements ILoginView, View
   @Override
   public void onSignUpSuccessful() {
     progressBarNew.setVisibility(View.INVISIBLE);
+  }
+
+  @Override
+  public void onSignInSuccessful(Credential credential) {
+    if (SessionUtils.isUserSessionExpired()) {
+      SessionUtils.updateUserCredentials(credential);
+    } else {
+      SessionUtils.setSignedInUser(credential);
+    }
+    SessionUtils.onAddNewAccount();
+    final Intent authResultIntent = new Intent();
+    authResultIntent.putExtra(AccountManager.KEY_ACCOUNT_NAME,
+        String.valueOf(credential.getUsername()));
+    authResultIntent.putExtra(AccountManager.KEY_ACCOUNT_TYPE, AuthenticationService.ACCOUNT_TYPE);
+    setAccountAuthenticatorResult(authResultIntent.getExtras());
+    setResult(RESULT_OK, authResultIntent);
+    progressBar.setVisibility(View.INVISIBLE);
+    finish();
+  }
+
+  @Override
+  public void onSignInError() {
+    showSnackBar("Username or password is incorrect");
+    Log.e(TAG, "onSignInError: ");
+    renderButtonsAfterError();
+  }
+
+  @Override
+  public void showSnackBar(String message) {
+    TSnackbar snackbar = TSnackbar.make(findViewById(android.R.id.content), message,
+        TSnackbar.LENGTH_LONG);
+    snackbar.setActionTextColor(Color.WHITE);
+    View snackbarView = snackbar.getView();
+    snackbarView.setBackgroundColor(Color.parseColor("#ec103c"));
+    TextView textView = (TextView) snackbarView.findViewById(com.androidadvance.topsnackbar.
+        R.id.snackbar_text);
+    textView.setTextColor(Color.WHITE);
+    snackbar.show();
+  }
+
+  private void closeKeyboard() {
+    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+    imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
   }
 }

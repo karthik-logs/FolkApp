@@ -38,7 +38,9 @@ public class LoginPresenter implements ILoginPresenter {
 
   @Override
   public void onSignInClicked(String username, String password) {
-
+    password = EncodeUtils.encodePasswordMD5(password);
+    new CredentialTransaction.SignInTask(username, password).execute(this.loginCallback);
+    Log.d(TAG, "onSignInClicked: password : " + password);
   }
 
   @Override

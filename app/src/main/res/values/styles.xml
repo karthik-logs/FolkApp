@@ -7,4 +7,12 @@
     <!-- Base application theme. -->
     <style name="AppBarOverlay" parent="Base.ThemeOverlay.AppCompat.Dark.ActionBar"/>
     <style name="PopupOverlay" parent="Base.ThemeOverlay.AppCompat.Light"/>
+
+    <style name="EditTextConditions">
+        <item name="android:digits">qwertyuiopasdfghjklzxcvbnm1234567890</item>
+        <item name="android:background">@drawable/edit_text_rounded_corners</item>
+        <item name="android:padding">10dp</item>
+        <item name="android:maxLength">20</item>
+        <item name="android:longClickable">false</item>
+    </style>
 </resources>

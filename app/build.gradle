@@ -36,6 +36,9 @@ dependencies {
     compile libraries.testRunner
     compile libraries.springRestTemplate
     compile libraries.GSON
+    compile libraries.jacksonMapper
+    compile libraries.jacksonJSON
+    compile libraries.topSnackBar
 }
 
 configurations.all {
